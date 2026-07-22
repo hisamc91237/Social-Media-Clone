@@ -7,6 +7,6 @@ const app = express();
 app.use(express.json()); // Middleware
 app.use("/api/auth", authRouter);
 app.use(cookieParser()); // Middleware to use cookies
-app.use("/api", postRouter);
+app.use("/api/posts", postRouter);
 
 module.exports = app;
