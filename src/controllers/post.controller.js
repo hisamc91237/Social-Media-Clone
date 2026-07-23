@@ -18,16 +18,23 @@ const createPostController = async (req, res) => {
     });
   }
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  let decoded = null;
 
-  console.log(decoded);
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    return res.status(401).json({
+      message: "user is unauthorized",
+    });
+  }
 
   const file = await imageKit.files.upload({
     file: await toFile(Buffer.from(req.file.buffer), "file"),
     fileName: "Test",
+    folder: "insta-clone-posts",
   });
 
-  //   res.send(file);
+  res.send(file);
 
   const post = await postModel.create({
     caption: req.body.caption,
@@ -41,4 +48,29 @@ const createPostController = async (req, res) => {
   });
 };
 
-module.exports = { createPostController };
+const getPostController = async (req, res) => {
+  const token = req.cookies.token;
+
+  let decoded = null;
+
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    return res.status(401).json({
+      message: "unauthorized access",
+    });
+  }
+
+  const userId = decoded.id;
+
+  const post = await postModel.find({
+    user: userId,
+  });
+
+  res.status(200).json({
+    messaege: "Post fetched successfully",
+    post,
+  });
+};
+
+module.exports = { createPostController, getPostController };
