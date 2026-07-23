@@ -73,4 +73,52 @@ const getPostController = async (req, res) => {
   });
 };
 
-module.exports = { createPostController, getPostController };
+const getPostDetailsController = async (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(201).json({
+      message: "unauthorizes access",
+    });
+  }
+
+  let decoded = null;
+
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    return res.status(201).json({
+      message: "unauthorizes access",
+    });
+  }
+
+  const userId = decoded.id;
+  const postId = req.params.postId;
+
+  const post = await postModel.findById(postId);
+
+  if (!post) {
+    return res.status(404).json({
+      message: "Post not found",
+    });
+  }
+
+  const isValidUser = post.user.toString() === userId;
+
+  if (!isValidUser) {
+    return res.status(403).json({
+      message: "Forbidded Content",
+    });
+  }
+
+  res.status(200).json({
+    message: "Post fetched successfully",
+    post,
+  });
+};
+
+module.exports = {
+  createPostController,
+  getPostController,
+  getPostDetailsController,
+};

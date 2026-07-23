@@ -20,4 +20,9 @@ GET /api/posts [protected]
 */
 postRouter.get("/", postController.getPostController);
 
+/* 
+GET /api/posts/details/:postId
+*/
+postRouter.get("/details/:postId", postController.getPostDetailsController);
+
 module.exports = postRouter;
