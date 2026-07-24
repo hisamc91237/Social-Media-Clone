@@ -59,4 +59,7 @@ const unfollowUserController = async (req, res) => {
   });
 };
 
-module.exports = { followUserController, unfollowUserController };
+module.exports = {
+  followUserController,
+  unfollowUserController,
+};
