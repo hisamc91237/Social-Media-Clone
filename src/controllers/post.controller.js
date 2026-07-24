@@ -8,26 +8,6 @@ const imageKit = new ImageKit({
 });
 
 const createPostController = async (req, res) => {
-  console.log(req.body, req.file);
-
-  const token = req.cookies.token;
-
-  if (!token) {
-    return res.status(404).json({
-      message: "access denied",
-    });
-  }
-
-  let decoded = null;
-
-  try {
-    decoded = jwt.verify(token, process.env.JWT_SECRET);
-  } catch (err) {
-    return res.status(401).json({
-      message: "user is unauthorized",
-    });
-  }
-
   const file = await imageKit.files.upload({
     file: await toFile(Buffer.from(req.file.buffer), "file"),
     fileName: "Test",
@@ -39,7 +19,7 @@ const createPostController = async (req, res) => {
   const post = await postModel.create({
     caption: req.body.caption,
     imageUrl: file.url,
-    user: decoded.id,
+    user: req.user.id,
   });
 
   res.status(201).json({
@@ -49,19 +29,7 @@ const createPostController = async (req, res) => {
 };
 
 const getPostController = async (req, res) => {
-  const token = req.cookies.token;
-
-  let decoded = null;
-
-  try {
-    decoded = jwt.verify(token, process.env.JWT_SECRET);
-  } catch (err) {
-    return res.status(401).json({
-      message: "unauthorized access",
-    });
-  }
-
-  const userId = decoded.id;
+  const userId = req.user.id;
 
   const post = await postModel.find({
     user: userId,
@@ -74,25 +42,7 @@ const getPostController = async (req, res) => {
 };
 
 const getPostDetailsController = async (req, res) => {
-  const token = req.cookies.token;
-
-  if (!token) {
-    return res.status(201).json({
-      message: "unauthorizes access",
-    });
-  }
-
-  let decoded = null;
-
-  try {
-    decoded = jwt.verify(token, process.env.JWT_SECRET);
-  } catch (err) {
-    return res.status(201).json({
-      message: "unauthorizes access",
-    });
-  }
-
-  const userId = decoded.id;
+  const userId = req.user.id;
   const postId = req.params.postId;
 
   const post = await postModel.findById(postId);
