@@ -49,7 +49,6 @@ const registerController = async (req, res) => {
       bio: user.bio,
       profile_image: user.profile_image,
     },
-    token,
   });
 };
 
@@ -93,7 +92,6 @@ const loginController = async (req, res) => {
       bio: user.bio,
       profile_image: user.profile_image,
     },
-    token,
   });
 };
 
