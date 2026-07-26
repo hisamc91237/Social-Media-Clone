@@ -42,5 +42,10 @@ postRouter.post(
   identifyUser,
   postController.createLikeController,
 );
+/*
+ * @route GET /api/posts/feed
+ * @description : Get all the posts
+ */
+postRouter.get("/feed", identifyUser, postController.getFeedController);
 
 module.exports = postRouter;
