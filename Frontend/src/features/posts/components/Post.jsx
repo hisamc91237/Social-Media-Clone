@@ -9,7 +9,7 @@ const Post = ({ user, post }) => {
         </div>
         <p>{user.username}</p>
       </div>
-      <img src={post.imgUrl} alt="" />
+      <img src={post.imageUrl} alt="" />
       <div className="icons">
         <div className="left">
           <button>
