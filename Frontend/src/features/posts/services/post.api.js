@@ -6,10 +6,17 @@ const api = axios.create({
 });
 
 export const getFeed = async () => {
-  try {
-    const response = await api.get("/feed");
-    return response.data;
-  } catch (err) {
-    console.log(err);
-  }
+  const response = await api.get("/feed");
+  return response.data;
+};
+
+export const createPost = async (imageFile, caption) => {
+  const formData = new FormData();
+
+  formData.append("image", imageFile);
+  formData.append("caption", caption);
+
+  const response = await api.post("/", formData);
+
+  return response.data;
 };
